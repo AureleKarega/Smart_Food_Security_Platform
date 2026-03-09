@@ -11,7 +11,8 @@
       "Bash(ng generate component components/community --skip-tests)",
       "Bash(ng generate component components/about --skip-tests)",
       "Bash(ng generate component components/footer --skip-tests)",
-      "Bash(ng generate component components/food-card --skip-tests)"
+      "Bash(ng generate component components/food-card --skip-tests)",
+      "Bash(curl -s http://localhost:4200)"
     ]
   }
 }

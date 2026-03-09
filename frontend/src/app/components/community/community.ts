@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { CommunityService, CommunityPost } from '../../services/community';
@@ -11,11 +11,11 @@ import { AuthService } from '../../services/auth';
   styleUrl: './community.scss',
 })
 export class Community implements OnInit {
-  posts: CommunityPost[] = [];
+  posts = signal<CommunityPost[]>([]);
   newPostContent = '';
   newPostType = 'discussion';
   selectedFilter = '';
-  loading = true;
+  loading = signal(true);
 
   postTypes = [
     { value: 'discussion', label: 'Discussion' },
@@ -34,10 +34,10 @@ export class Community implements OnInit {
   }
 
   loadPosts() {
-    this.loading = true;
+    this.loading.set(true);
     this.communityService.getAllPosts(this.selectedFilter || undefined).subscribe({
-      next: (res) => { this.posts = res.posts; this.loading = false; },
-      error: () => { this.posts = []; this.loading = false; }
+      next: (res) => { this.posts.set(res.posts); this.loading.set(false); },
+      error: () => { this.posts.set([]); this.loading.set(false); }
     });
   }
 
@@ -48,17 +48,18 @@ export class Community implements OnInit {
       type: this.newPostType
     }).subscribe({
       next: (res) => {
-        this.posts.unshift(res.post);
+        this.posts.update(posts => [res.post, ...posts]);
         this.newPostContent = '';
       }
     });
   }
 
   likePost(post: CommunityPost) {
-    this.communityService.likePost(post._id).subscribe({
+    this.communityService.likePost(post.id).subscribe({
       next: (res) => {
-        const idx = this.posts.findIndex(p => p._id === post._id);
-        if (idx !== -1) this.posts[idx] = res.post;
+        this.posts.update(posts =>
+          posts.map(p => p.id === post.id ? res.post : p)
+        );
       }
     });
   }

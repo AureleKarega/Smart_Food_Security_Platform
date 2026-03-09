@@ -20,11 +20,11 @@
       </select>
     </div>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="loading">
         <p>Loading food listings...</p>
       </div>
-    } @else if (filteredListings.length === 0) {
+    } @else if (filteredListings().length === 0) {
       <div class="empty-state">
         <div class="empty-icon">&#127858;</div>
         <h3>No food listings available</h3>
@@ -33,7 +33,7 @@
       </div>
     } @else {
       <div class="listings-grid">
-        @for (listing of filteredListings; track listing._id) {
+        @for (listing of filteredListings(); track listing.id) {
           <app-food-card [listing]="listing"></app-food-card>
         }
       </div>

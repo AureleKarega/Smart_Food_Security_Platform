@@ -1,13 +1,18 @@
-const CommunityPost = require('../models/CommunityPost');
+const { CommunityPost, Comment } = require('../models/CommunityPost');
+const User = require('../models/User');
 
 exports.createPost = async (req, res) => {
   try {
     const post = await CommunityPost.create({
       ...req.body,
-      author: req.user._id
+      authorId: req.user.id
     });
-    await post.populate('author', 'name avatar');
-    res.status(201).json({ post });
+
+    const result = await CommunityPost.findByPk(post.id, {
+      include: [{ model: User, as: 'author', attributes: ['id', 'name', 'avatar'] }]
+    });
+
+    res.status(201).json({ post: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -16,12 +21,20 @@ exports.createPost = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   try {
     const { type } = req.query;
-    const filter = type ? { type } : {};
+    const where = type ? { type } : {};
 
-    const posts = await CommunityPost.find(filter)
-      .populate('author', 'name avatar')
-      .populate('comments.author', 'name avatar')
-      .sort({ createdAt: -1 });
+    const posts = await CommunityPost.findAll({
+      where,
+      include: [
+        { model: User, as: 'author', attributes: ['id', 'name', 'avatar'] },
+        {
+          model: Comment,
+          as: 'comments',
+          include: [{ model: User, as: 'author', attributes: ['id', 'name', 'avatar'] }]
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
 
     res.json({ posts });
   } catch (error) {
@@ -31,21 +44,38 @@ exports.getAllPosts = async (req, res) => {
 
 exports.likePost = async (req, res) => {
   try {
-    const post = await CommunityPost.findById(req.params.id);
+    const post = await CommunityPost.findByPk(req.params.id);
 
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    const index = post.likes.indexOf(req.user._id);
+    const likes = post.likes || [];
+    const userId = req.user.id;
+    const index = likes.indexOf(userId);
+
     if (index === -1) {
-      post.likes.push(req.user._id);
+      likes.push(userId);
     } else {
-      post.likes.splice(index, 1);
+      likes.splice(index, 1);
     }
 
+    post.likes = likes;
+    post.changed('likes', true);
     await post.save();
-    res.json({ post });
+
+    const result = await CommunityPost.findByPk(post.id, {
+      include: [
+        { model: User, as: 'author', attributes: ['id', 'name', 'avatar'] },
+        {
+          model: Comment,
+          as: 'comments',
+          include: [{ model: User, as: 'author', attributes: ['id', 'name', 'avatar'] }]
+        }
+      ]
+    });
+
+    res.json({ post: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -53,20 +83,30 @@ exports.likePost = async (req, res) => {
 
 exports.addComment = async (req, res) => {
   try {
-    const post = await CommunityPost.findById(req.params.id);
+    const post = await CommunityPost.findByPk(req.params.id);
 
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    post.comments.push({
-      author: req.user._id,
+    await Comment.create({
+      postId: post.id,
+      authorId: req.user.id,
       content: req.body.content
     });
 
-    await post.save();
-    await post.populate('comments.author', 'name avatar');
-    res.json({ post });
+    const result = await CommunityPost.findByPk(post.id, {
+      include: [
+        { model: User, as: 'author', attributes: ['id', 'name', 'avatar'] },
+        {
+          model: Comment,
+          as: 'comments',
+          include: [{ model: User, as: 'author', attributes: ['id', 'name', 'avatar'] }]
+        }
+      ]
+    });
+
+    res.json({ post: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -12,19 +12,19 @@
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-number">{{ stats.claimedListings || 0 }}</span>
+        <span class="stat-number">{{ stats().claimedListings || 0 }}</span>
         <span class="stat-label">Meals Shared</span>
       </div>
       <div class="stat">
-        <span class="stat-number">{{ stats.totalCo2Saved || 0 }} kg</span>
+        <span class="stat-number">{{ stats().totalCo2Saved || 0 }} kg</span>
         <span class="stat-label">CO2 Reduced</span>
       </div>
       <div class="stat">
-        <span class="stat-number">{{ stats.totalUsers || 0 }}</span>
+        <span class="stat-number">{{ stats().totalUsers || 0 }}</span>
         <span class="stat-label">Active Students</span>
       </div>
       <div class="stat">
-        <span class="stat-number">{{ stats.totalServings || 0 }}</span>
+        <span class="stat-number">{{ stats().totalServings || 0 }}</span>
         <span class="stat-label">Servings Saved</span>
       </div>
     </div>
@@ -92,7 +92,7 @@
   </div>
 </section>
 
-@if (featuredListings.length > 0) {
+@if (featuredListings().length > 0) {
   <section class="featured">
     <div class="container">
       <div class="section-header">
@@ -100,7 +100,7 @@
         <h2>Fresh Food on the Board</h2>
       </div>
       <div class="listings-grid">
-        @for (listing of featuredListings; track listing._id) {
+        @for (listing of featuredListings(); track listing.id) {
           <app-food-card [listing]="listing"></app-food-card>
         }
       </div>

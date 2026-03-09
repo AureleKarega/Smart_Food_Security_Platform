@@ -30,16 +30,16 @@
       }
     </div>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="loading"><p>Loading posts...</p></div>
-    } @else if (posts.length === 0) {
+    } @else if (posts().length === 0) {
       <div class="empty-state">
         <h3>No posts yet</h3>
         <p>Be the first to share something with the community!</p>
       </div>
     } @else {
       <div class="posts-list">
-        @for (post of posts; track post._id) {
+        @for (post of posts(); track post.id) {
           <div class="post-card">
             <div class="post-header">
               <div class="post-author">

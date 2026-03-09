@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { FoodService, FoodListing } from '../../services/food';
@@ -11,11 +11,11 @@ import { FoodCard } from '../food-card/food-card';
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
-  listings: FoodListing[] = [];
-  filteredListings: FoodListing[] = [];
+  listings = signal<FoodListing[]>([]);
+  filteredListings = signal<FoodListing[]>([]);
   searchTerm = '';
   selectedCategory = '';
-  loading = true;
+  loading = signal(true);
 
   categories = [
     { value: '', label: 'All Categories' },
@@ -35,21 +35,21 @@ export class Dashboard implements OnInit {
   }
 
   loadListings() {
-    this.loading = true;
+    this.loading.set(true);
     const params: any = {};
     if (this.selectedCategory) params.category = this.selectedCategory;
     if (this.searchTerm) params.search = this.searchTerm;
 
     this.foodService.getAllListings(params).subscribe({
       next: (res) => {
-        this.listings = res.listings;
-        this.filteredListings = res.listings;
-        this.loading = false;
+        this.listings.set(res.listings);
+        this.filteredListings.set(res.listings);
+        this.loading.set(false);
       },
       error: () => {
-        this.listings = [];
-        this.filteredListings = [];
-        this.loading = false;
+        this.listings.set([]);
+        this.filteredListings.set([]);
+        this.loading.set(false);
       }
     });
   }

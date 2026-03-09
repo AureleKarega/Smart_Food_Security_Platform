@@ -1,78 +1,89 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const foodListingSchema = new mongoose.Schema({
+const FoodListing = sequelize.define('FoodListing', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   title: {
-    type: String,
-    required: [true, 'Food title is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   description: {
-    type: String,
-    required: [true, 'Description is required']
+    type: DataTypes.TEXT,
+    allowNull: false
   },
   category: {
-    type: String,
-    required: true,
-    enum: ['cooked-meal', 'raw-ingredients', 'snacks', 'beverages', 'baked-goods', 'fruits-vegetables', 'other']
+    type: DataTypes.ENUM('cooked-meal', 'raw-ingredients', 'snacks', 'beverages', 'baked-goods', 'fruits-vegetables', 'other'),
+    allowNull: false
   },
   quantity: {
-    type: String,
-    required: [true, 'Quantity is required']
+    type: DataTypes.STRING,
+    allowNull: false
   },
   servings: {
-    type: Number,
-    default: 1
+    type: DataTypes.INTEGER,
+    defaultValue: 1
   },
-  dietaryInfo: [{
-    type: String,
-    enum: ['vegetarian', 'vegan', 'halal', 'gluten-free', 'dairy-free', 'nut-free', 'none']
-  }],
+  dietaryInfo: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: [],
+    field: 'dietary_info'
+  },
   allergens: {
-    type: String,
-    default: ''
+    type: DataTypes.STRING,
+    defaultValue: ''
   },
   expiresAt: {
-    type: Date,
-    required: [true, 'Expiry time is required']
+    type: DataTypes.DATE,
+    allowNull: false,
+    field: 'expires_at'
   },
   pickupLocation: {
-    type: String,
-    required: [true, 'Pickup location is required']
+    type: DataTypes.STRING,
+    allowNull: false,
+    field: 'pickup_location'
   },
   pickupInstructions: {
-    type: String,
-    default: ''
+    type: DataTypes.TEXT,
+    defaultValue: '',
+    field: 'pickup_instructions'
   },
   imageUrl: {
-    type: String,
-    default: ''
+    type: DataTypes.STRING,
+    defaultValue: '',
+    field: 'image_url'
   },
   status: {
-    type: String,
-    enum: ['available', 'reserved', 'claimed', 'expired'],
-    default: 'available'
+    type: DataTypes.ENUM('available', 'reserved', 'claimed', 'expired'),
+    defaultValue: 'available'
   },
-  donor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  donorId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    field: 'donor_id'
   },
-  claimedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
+  claimedById: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'claimed_by_id'
   },
   co2Saved: {
-    type: Number,
-    default: 0
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+    field: 'co2_saved'
   }
-}, { timestamps: true });
-
-foodListingSchema.pre('save', function(next) {
-  if (this.isNew) {
-    this.co2Saved = parseFloat((this.servings * 0.41).toFixed(2));
+}, {
+  tableName: 'food_listings',
+  timestamps: true,
+  underscored: true,
+  hooks: {
+    beforeCreate: (listing) => {
+      listing.co2Saved = parseFloat((listing.servings * 0.41).toFixed(2));
+    }
   }
-  next();
 });
 
-module.exports = mongoose.model('FoodListing', foodListingSchema);
+module.exports = FoodListing;

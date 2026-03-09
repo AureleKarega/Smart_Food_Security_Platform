@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth';
 
 export interface FoodListing {
-  _id: string;
+  id: number;
   title: string;
   description: string;
   category: string;
@@ -17,7 +17,7 @@ export interface FoodListing {
   pickupInstructions: string;
   imageUrl: string;
   status: string;
-  donor: { _id: string; name: string; avatar: string };
+  donor: { id: number; name: string; avatar: string };
   claimedBy: any;
   co2Saved: number;
   createdAt: string;
@@ -27,7 +27,7 @@ export interface FoodListing {
   providedIn: 'root',
 })
 export class FoodService {
-  private apiUrl = 'http://localhost:3000/api/food';
+  private apiUrl = '/api/food';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -48,7 +48,7 @@ export class FoodService {
     return this.http.get<{ listings: FoodListing[] }>(url);
   }
 
-  getListingById(id: string): Observable<{ listing: FoodListing }> {
+  getListingById(id: number): Observable<{ listing: FoodListing }> {
     return this.http.get<{ listing: FoodListing }>(`${this.apiUrl}/${id}`);
   }
 
@@ -56,11 +56,11 @@ export class FoodService {
     return this.http.post<{ listing: FoodListing }>(this.apiUrl, data, { headers: this.getHeaders() });
   }
 
-  claimListing(id: string): Observable<{ listing: FoodListing }> {
+  claimListing(id: number): Observable<{ listing: FoodListing }> {
     return this.http.put<{ listing: FoodListing }>(`${this.apiUrl}/${id}/claim`, {}, { headers: this.getHeaders() });
   }
 
-  deleteListing(id: string): Observable<any> {
+  deleteListing(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FoodService } from '../../services/food';
@@ -23,8 +23,8 @@ export class Donate {
     pickupLocation: '',
     pickupInstructions: ''
   };
-  error = '';
-  submitting = false;
+  error = signal('');
+  submitting = signal(false);
 
   dietaryOptions = ['vegetarian', 'vegan', 'halal', 'gluten-free', 'dairy-free', 'nut-free'];
 
@@ -53,16 +53,16 @@ export class Donate {
       return;
     }
 
-    this.error = '';
-    this.submitting = true;
+    this.error.set('');
+    this.submitting.set(true);
 
     this.foodService.createListing(this.form).subscribe({
       next: () => {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Failed to create listing';
-        this.submitting = false;
+        this.error.set(err.error?.message || 'Failed to create listing');
+        this.submitting.set(false);
       }
     });
   }

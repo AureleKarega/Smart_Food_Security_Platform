@@ -1,65 +1,84 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs');
+const { sequelize } = require('../config/db');
 
-const userSchema = new mongoose.Schema({
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
   name: {
-    type: String,
-    required: [true, 'Name is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   email: {
-    type: String,
-    required: [true, 'Email is required'],
+    type: DataTypes.STRING,
+    allowNull: false,
     unique: true,
-    lowercase: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email']
+    validate: { isEmail: true }
   },
   password: {
-    type: String,
-    required: [true, 'Password is required'],
-    minlength: 6,
-    select: false
+    type: DataTypes.STRING,
+    allowNull: false
   },
   studentId: {
-    type: String,
-    required: [true, 'Student ID is required'],
-    unique: true
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    field: 'student_id'
   },
   avatar: {
-    type: String,
-    default: ''
+    type: DataTypes.STRING,
+    defaultValue: ''
   },
   bio: {
-    type: String,
-    default: ''
+    type: DataTypes.TEXT,
+    defaultValue: ''
   },
   impactPoints: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'impact_points'
   },
   mealsShared: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'meals_shared'
   },
   mealsReceived: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+    field: 'meals_received'
   },
   role: {
-    type: String,
-    enum: ['student', 'admin'],
-    default: 'student'
+    type: DataTypes.ENUM('student', 'admin'),
+    defaultValue: 'student'
   }
-}, { timestamps: true });
-
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+}, {
+  tableName: 'users',
+  timestamps: true,
+  underscored: true,
+  hooks: {
+    beforeCreate: async (user) => {
+      user.password = await bcrypt.hash(user.password, 12);
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        user.password = await bcrypt.hash(user.password, 12);
+      }
+    }
+  }
 });
 
-userSchema.methods.comparePassword = async function(candidatePassword) {
+User.prototype.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+User.prototype.toJSON = function () {
+  const values = { ...this.get() };
+  delete values.password;
+  return values;
+};
+
+module.exports = User;

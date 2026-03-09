@@ -14,8 +14,8 @@
       </div>
     } @else {
       <form class="donate-form" (ngSubmit)="onSubmit()">
-        @if (error) {
-          <div class="alert alert-error">{{ error }}</div>
+        @if (error()) {
+          <div class="alert alert-error">{{ error() }}</div>
         }
 
         <div class="form-row">
@@ -86,8 +86,8 @@
           <textarea id="pickupInstructions" [(ngModel)]="form.pickupInstructions" name="pickupInstructions" placeholder="Any special instructions for pickup..."></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" [disabled]="submitting">
-          {{ submitting ? 'Posting...' : 'Post Food Listing' }}
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="submitting()">
+          {{ submitting() ? 'Posting...' : 'Post Food Listing' }}
         </button>
       </form>
     }

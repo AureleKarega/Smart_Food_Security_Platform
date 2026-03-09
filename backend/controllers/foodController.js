@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+const { sequelize } = require('../config/db');
 const FoodListing = require('../models/FoodListing');
 const User = require('../models/User');
 
@@ -5,14 +7,19 @@ exports.createListing = async (req, res) => {
   try {
     const listing = await FoodListing.create({
       ...req.body,
-      donor: req.user._id
+      donorId: req.user.id
     });
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $inc: { impactPoints: 10, mealsShared: 1 }
+    await User.increment(
+      { impactPoints: 10, mealsShared: 1 },
+      { where: { id: req.user.id } }
+    );
+
+    const result = await FoodListing.findByPk(listing.id, {
+      include: [{ model: User, as: 'donor', attributes: ['id', 'name', 'avatar'] }]
     });
 
-    res.status(201).json({ listing });
+    res.status(201).json({ listing: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -21,22 +28,24 @@ exports.createListing = async (req, res) => {
 exports.getAllListings = async (req, res) => {
   try {
     const { category, status, search } = req.query;
-    const filter = {};
+    const where = {};
 
-    if (category) filter.category = category;
-    if (status) filter.status = status;
-    else filter.status = 'available';
+    if (category) where.category = category;
+    if (status) where.status = status;
+    else where.status = 'available';
 
     if (search) {
-      filter.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+      where[Op.or] = [
+        { title: { [Op.iLike]: `%${search}%` } },
+        { description: { [Op.iLike]: `%${search}%` } }
       ];
     }
 
-    const listings = await FoodListing.find(filter)
-      .populate('donor', 'name avatar')
-      .sort({ createdAt: -1 });
+    const listings = await FoodListing.findAll({
+      where,
+      include: [{ model: User, as: 'donor', attributes: ['id', 'name', 'avatar'] }],
+      order: [['createdAt', 'DESC']]
+    });
 
     res.json({ listings });
   } catch (error) {
@@ -46,9 +55,12 @@ exports.getAllListings = async (req, res) => {
 
 exports.getListingById = async (req, res) => {
   try {
-    const listing = await FoodListing.findById(req.params.id)
-      .populate('donor', 'name avatar email')
-      .populate('claimedBy', 'name');
+    const listing = await FoodListing.findByPk(req.params.id, {
+      include: [
+        { model: User, as: 'donor', attributes: ['id', 'name', 'avatar', 'email'] },
+        { model: User, as: 'claimedBy', attributes: ['id', 'name'] }
+      ]
+    });
 
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });
@@ -62,7 +74,7 @@ exports.getListingById = async (req, res) => {
 
 exports.claimListing = async (req, res) => {
   try {
-    const listing = await FoodListing.findById(req.params.id);
+    const listing = await FoodListing.findByPk(req.params.id);
 
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });
@@ -72,19 +84,27 @@ exports.claimListing = async (req, res) => {
       return res.status(400).json({ message: 'This listing is no longer available' });
     }
 
-    if (listing.donor.toString() === req.user._id.toString()) {
+    if (listing.donorId === req.user.id) {
       return res.status(400).json({ message: 'You cannot claim your own listing' });
     }
 
     listing.status = 'claimed';
-    listing.claimedBy = req.user._id;
+    listing.claimedById = req.user.id;
     await listing.save();
 
-    await User.findByIdAndUpdate(req.user._id, {
-      $inc: { impactPoints: 5, mealsReceived: 1 }
+    await User.increment(
+      { impactPoints: 5, mealsReceived: 1 },
+      { where: { id: req.user.id } }
+    );
+
+    const result = await FoodListing.findByPk(listing.id, {
+      include: [
+        { model: User, as: 'donor', attributes: ['id', 'name', 'avatar'] },
+        { model: User, as: 'claimedBy', attributes: ['id', 'name'] }
+      ]
     });
 
-    res.json({ listing });
+    res.json({ listing: result });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -92,17 +112,17 @@ exports.claimListing = async (req, res) => {
 
 exports.deleteListing = async (req, res) => {
   try {
-    const listing = await FoodListing.findById(req.params.id);
+    const listing = await FoodListing.findByPk(req.params.id);
 
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });
     }
 
-    if (listing.donor.toString() !== req.user._id.toString()) {
+    if (listing.donorId !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to delete this listing' });
     }
 
-    await FoodListing.findByIdAndDelete(req.params.id);
+    await listing.destroy();
     res.json({ message: 'Listing deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -111,22 +131,23 @@ exports.deleteListing = async (req, res) => {
 
 exports.getStats = async (req, res) => {
   try {
-    const totalListings = await FoodListing.countDocuments();
-    const claimedListings = await FoodListing.countDocuments({ status: 'claimed' });
-    const totalUsers = await User.countDocuments();
+    const totalListings = await FoodListing.count();
+    const claimedListings = await FoodListing.count({ where: { status: 'claimed' } });
+    const totalUsers = await User.count();
 
-    const co2Stats = await FoodListing.aggregate([
-      { $match: { status: 'claimed' } },
-      { $group: { _id: null, totalCo2: { $sum: '$co2Saved' }, totalServings: { $sum: '$servings' } } }
-    ]);
+    const [co2Stats] = await sequelize.query(`
+      SELECT COALESCE(SUM(co2_saved), 0) as "totalCo2",
+             COALESCE(SUM(servings), 0) as "totalServings"
+      FROM food_listings WHERE status = 'claimed'
+    `);
 
     res.json({
       stats: {
         totalListings,
         claimedListings,
         totalUsers,
-        totalCo2Saved: co2Stats[0]?.totalCo2 || 0,
-        totalServings: co2Stats[0]?.totalServings || 0
+        totalCo2Saved: parseFloat(co2Stats[0]?.totalCo2) || 0,
+        totalServings: parseInt(co2Stats[0]?.totalServings) || 0
       }
     });
   } catch (error) {

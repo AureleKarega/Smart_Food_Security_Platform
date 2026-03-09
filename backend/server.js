@@ -1,9 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db');
 
 dotenv.config();
+
+const { connectDB, sequelize } = require('./config/db');
+const { User, FoodListing, CommunityPost, Comment } = require('./models');
 
 const authRoutes = require('./routes/authRoutes');
 const foodRoutes = require('./routes/foodRoutes');
@@ -28,8 +30,13 @@ app.get('/api/health', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 
-connectDB().then(() => {
+const start = async () => {
+  await connectDB();
+  await sequelize.sync({ alter: true });
+  console.log('Database tables synced');
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-});
+};
+
+start();

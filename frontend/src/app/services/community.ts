@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth';
 
 export interface CommunityPost {
-  _id: string;
-  author: { _id: string; name: string; avatar: string };
+  id: number;
+  author: { id: number; name: string; avatar: string };
   content: string;
   type: string;
-  likes: string[];
-  comments: { author: { _id: string; name: string }; content: string; createdAt: string }[];
+  likes: number[];
+  comments: { author: { id: number; name: string }; content: string; createdAt: string }[];
   createdAt: string;
 }
 
@@ -17,7 +17,7 @@ export interface CommunityPost {
   providedIn: 'root',
 })
 export class CommunityService {
-  private apiUrl = 'http://localhost:3000/api/community';
+  private apiUrl = '/api/community';
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
@@ -38,11 +38,11 @@ export class CommunityService {
     return this.http.post<{ post: CommunityPost }>(this.apiUrl, data, { headers: this.getHeaders() });
   }
 
-  likePost(id: string): Observable<{ post: CommunityPost }> {
+  likePost(id: number): Observable<{ post: CommunityPost }> {
     return this.http.put<{ post: CommunityPost }>(`${this.apiUrl}/${id}/like`, {}, { headers: this.getHeaders() });
   }
 
-  addComment(id: string, content: string): Observable<{ post: CommunityPost }> {
+  addComment(id: number, content: string): Observable<{ post: CommunityPost }> {
     return this.http.post<{ post: CommunityPost }>(`${this.apiUrl}/${id}/comment`, { content }, { headers: this.getHeaders() });
   }
 }
