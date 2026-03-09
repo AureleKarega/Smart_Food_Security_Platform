@@ -1,0 +1,32 @@
+<div class="food-card card">
+  <div class="card-header">
+    <span class="category-badge">{{ getCategoryLabel(listing.category) }}</span>
+    <span class="status-badge" [class]="listing.status">{{ listing.status }}</span>
+  </div>
+  <div class="card-body">
+    <h3>{{ listing.title }}</h3>
+    <p class="description">{{ listing.description }}</p>
+    <div class="meta">
+      <span class="meta-item">&#127858; {{ listing.quantity }} ({{ listing.servings }} servings)</span>
+      <span class="meta-item">&#128205; {{ listing.pickupLocation }}</span>
+      <span class="meta-item">&#128336; Expires: {{ listing.expiresAt | date:'short' }}</span>
+    </div>
+    @if (listing.dietaryInfo?.length) {
+      <div class="dietary-tags">
+        @for (tag of listing.dietaryInfo; track tag) {
+          <span class="diet-tag">{{ tag }}</span>
+        }
+      </div>
+    }
+    <div class="card-footer">
+      <span class="donor">Shared by {{ listing.donor?.name || 'Anonymous' }}</span>
+      <span class="co2">&#127793; {{ listing.co2Saved }} kg CO2 saved</span>
+    </div>
+    @if (listing.status === 'available' && auth.isLoggedIn() && !isExpired()) {
+      <button class="btn btn-primary btn-sm" (click)="claim()">Claim This Food</button>
+    }
+    @if (listing.status === 'claimed') {
+      <span class="claimed-label">Claimed</span>
+    }
+  </div>
+</div>

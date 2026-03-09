@@ -1,0 +1,42 @@
+<section class="dashboard-page">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>Food Board</h1>
+        <p>Browse available food listings from fellow ALU students</p>
+      </div>
+      <a routerLink="/donate" class="btn btn-primary">+ Share Food</a>
+    </div>
+
+    <div class="filters">
+      <div class="search-box">
+        <input type="text" placeholder="Search food listings..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+        <button class="btn btn-primary btn-sm" (click)="onSearch()">Search</button>
+      </div>
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+        @for (cat of categories; track cat.value) {
+          <option [value]="cat.value">{{ cat.label }}</option>
+        }
+      </select>
+    </div>
+
+    @if (loading) {
+      <div class="loading">
+        <p>Loading food listings...</p>
+      </div>
+    } @else if (filteredListings.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">&#127858;</div>
+        <h3>No food listings available</h3>
+        <p>Be the first to share surplus food with the community!</p>
+        <a routerLink="/donate" class="btn btn-primary">Share Food Now</a>
+      </div>
+    } @else {
+      <div class="listings-grid">
+        @for (listing of filteredListings; track listing._id) {
+          <app-food-card [listing]="listing"></app-food-card>
+        }
+      </div>
+    }
+  </div>
+</section>

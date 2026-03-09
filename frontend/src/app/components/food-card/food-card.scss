@@ -1,0 +1,76 @@
+.food-card {
+  padding: 0;
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.25rem 0;
+  }
+  .category-badge {
+    background: rgba(45, 106, 79, 0.1);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    &.available { background: #d4edda; color: #155724; }
+    &.claimed { background: #fff3cd; color: #856404; }
+    &.expired { background: #f8d7da; color: #721c24; }
+  }
+  .card-body {
+    padding: 1rem 1.25rem 1.25rem;
+    h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+    .description {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    .meta-item {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+  }
+  .dietary-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+    .diet-tag {
+      background: var(--bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+  }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    .co2 { color: var(--primary); font-weight: 600; }
+  }
+  .claimed-label {
+    display: inline-block;
+    color: var(--warning);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,103 @@
+.navbar {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+  .logo-icon { font-size: 1.5rem; }
+}
+.nav-menu {
+  display: flex;
+  gap: 0.25rem;
+  a {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    transition: all 0.2s;
+    &:hover, &.active {
+      background: rgba(45, 106, 79, 0.08);
+      color: var(--primary);
+    }
+  }
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  .user-name {
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+}
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.hamburger {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  position: relative;
+  transition: 0.3s;
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    transition: 0.3s;
+  }
+  &::before { top: -7px; }
+  &::after { bottom: -7px; }
+  &.open {
+    background: transparent;
+    &::before { transform: rotate(45deg); top: 0; }
+    &::after { transform: rotate(-45deg); bottom: 0; }
+  }
+}
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-actions { display: none; }
+  .nav-menu {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    &.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+.about-page { padding-bottom: 4rem; }
+.about-hero {
+  background: linear-gradient(135deg, #1b4332, #2d6a4f);
+  color: white;
+  padding: 5rem 0 4rem;
+  text-align: center;
+  h1 { font-size: 2.75rem; font-weight: 800; margin: 1rem 0; line-height: 1.15; }
+  p { max-width: 700px; margin: 0 auto; opacity: 0.9; font-size: 1.1rem; line-height: 1.7; }
+}
+.about-section {
+  padding: 3rem 0;
+  h2 { font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; }
+}
+.mission-text {
+  max-width: 800px;
+  margin: 0 auto;
+  p {
+    color: var(--text-light);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+}
+.sdg-grid, .values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+.sdg-card, .value-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  .sdg-number {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+  h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+  p { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
+}
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.fact-card {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  .fact-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+  }
+  p { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; }
+}
+@media (max-width: 768px) {
+  .about-hero h1 { font-size: 2rem; }
+  .sdg-grid, .values-grid, .facts-grid { grid-template-columns: 1fr; }
+}

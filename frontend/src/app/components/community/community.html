@@ -1,0 +1,66 @@
+<section class="community-page">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Community</span>
+      <h2>Student Food Community</h2>
+      <p>Share tips, stories, and connect with fellow students about food sustainability.</p>
+    </div>
+
+    @if (auth.isLoggedIn()) {
+      <div class="new-post-card">
+        <h3>Share with the community</h3>
+        <div class="form-group">
+          <textarea [(ngModel)]="newPostContent" placeholder="Share a food tip, impact story, or start a discussion..." rows="3"></textarea>
+        </div>
+        <div class="post-actions">
+          <select [(ngModel)]="newPostType">
+            @for (type of postTypes; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+            }
+          </select>
+          <button class="btn btn-primary btn-sm" (click)="createPost()" [disabled]="!newPostContent.trim()">Post</button>
+        </div>
+      </div>
+    }
+
+    <div class="filter-bar">
+      <button class="filter-btn" [class.active]="selectedFilter === ''" (click)="selectedFilter = ''; onFilterChange()">All</button>
+      @for (type of postTypes; track type.value) {
+        <button class="filter-btn" [class.active]="selectedFilter === type.value" (click)="selectedFilter = type.value; onFilterChange()">{{ type.label }}</button>
+      }
+    </div>
+
+    @if (loading) {
+      <div class="loading"><p>Loading posts...</p></div>
+    } @else if (posts.length === 0) {
+      <div class="empty-state">
+        <h3>No posts yet</h3>
+        <p>Be the first to share something with the community!</p>
+      </div>
+    } @else {
+      <div class="posts-list">
+        @for (post of posts; track post._id) {
+          <div class="post-card">
+            <div class="post-header">
+              <div class="post-author">
+                <div class="avatar">{{ post.author?.name?.charAt(0) || '?' }}</div>
+                <div>
+                  <strong>{{ post.author?.name || 'Anonymous' }}</strong>
+                  <span class="post-date">{{ post.createdAt | date:'mediumDate' }}</span>
+                </div>
+              </div>
+              <span class="type-badge" [attr.data-type]="post.type">{{ getTypeLabel(post.type) }}</span>
+            </div>
+            <p class="post-content">{{ post.content }}</p>
+            <div class="post-footer">
+              <button class="action-btn" (click)="likePost(post)">
+                &#10084;&#65039; {{ post.likes?.length || 0 }}
+              </button>
+              <span class="action-btn">&#128172; {{ post.comments?.length || 0 }} comments</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

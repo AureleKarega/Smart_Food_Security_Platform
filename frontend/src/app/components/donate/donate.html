@@ -1,0 +1,95 @@
+<section class="donate-page">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Share Food</span>
+      <h2>Post Surplus Food</h2>
+      <p>Help reduce food waste and support fellow students by sharing your surplus food.</p>
+    </div>
+
+    @if (!auth.isLoggedIn()) {
+      <div class="auth-prompt">
+        <p>You need to be logged in to share food.</p>
+        <a routerLink="/login" class="btn btn-primary">Log In</a>
+        <a routerLink="/register" class="btn btn-outline">Create Account</a>
+      </div>
+    } @else {
+      <form class="donate-form" (ngSubmit)="onSubmit()">
+        @if (error) {
+          <div class="alert alert-error">{{ error }}</div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title">Food Title *</label>
+            <input id="title" type="text" [(ngModel)]="form.title" name="title" placeholder="e.g., Leftover Jollof Rice" required>
+          </div>
+          <div class="form-group">
+            <label for="category">Category *</label>
+            <select id="category" [(ngModel)]="form.category" name="category" required>
+              <option value="cooked-meal">Cooked Meal</option>
+              <option value="raw-ingredients">Raw Ingredients</option>
+              <option value="snacks">Snacks</option>
+              <option value="beverages">Beverages</option>
+              <option value="baked-goods">Baked Goods</option>
+              <option value="fruits-vegetables">Fruits & Vegetables</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea id="description" [(ngModel)]="form.description" name="description" placeholder="Describe the food, how it was prepared, etc." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantity">Quantity *</label>
+            <input id="quantity" type="text" [(ngModel)]="form.quantity" name="quantity" placeholder="e.g., 2 plates, 1 bowl" required>
+          </div>
+          <div class="form-group">
+            <label for="servings">Number of Servings *</label>
+            <input id="servings" type="number" [(ngModel)]="form.servings" name="servings" min="1" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dietary Information</label>
+          <div class="checkbox-group">
+            @for (option of dietaryOptions; track option) {
+              <label class="checkbox-label" [class.selected]="isDietarySelected(option)">
+                <input type="checkbox" [checked]="isDietarySelected(option)" (change)="toggleDietary(option)">
+                {{ option }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="allergens">Allergen Information</label>
+          <input id="allergens" type="text" [(ngModel)]="form.allergens" name="allergens" placeholder="e.g., Contains nuts, milk">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pickupLocation">Pickup Location *</label>
+            <input id="pickupLocation" type="text" [(ngModel)]="form.pickupLocation" name="pickupLocation" placeholder="e.g., ALU Main Campus, Room 203" required>
+          </div>
+          <div class="form-group">
+            <label for="expiresAt">Available Until *</label>
+            <input id="expiresAt" type="datetime-local" [(ngModel)]="form.expiresAt" name="expiresAt" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pickupInstructions">Pickup Instructions</label>
+          <textarea id="pickupInstructions" [(ngModel)]="form.pickupInstructions" name="pickupInstructions" placeholder="Any special instructions for pickup..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="submitting">
+          {{ submitting ? 'Posting...' : 'Post Food Listing' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

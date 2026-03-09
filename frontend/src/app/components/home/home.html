@@ -1,0 +1,123 @@
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-badge">Climate Action x Food Security</span>
+    <h1>No Student Should<br>Go Hungry</h1>
+    <p class="hero-subtitle">
+      ALU FoodShare connects students with surplus food to those in need &mdash;
+      reducing waste, fighting hunger, and building a climate-conscious campus community.
+    </p>
+    <div class="hero-actions">
+      <a routerLink="/dashboard" class="btn btn-primary btn-lg">Browse Available Food</a>
+      <a routerLink="/donate" class="btn btn-outline btn-lg">Share Surplus Food</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">{{ stats.claimedListings || 0 }}</span>
+        <span class="stat-label">Meals Shared</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">{{ stats.totalCo2Saved || 0 }} kg</span>
+        <span class="stat-label">CO2 Reduced</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">{{ stats.totalUsers || 0 }}</span>
+        <span class="stat-label">Active Students</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">{{ stats.totalServings || 0 }}</span>
+        <span class="stat-label">Servings Saved</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mission">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Our Mission</span>
+      <h2>Where Climate Action Meets Food Justice</h2>
+    </div>
+    <div class="mission-statement">
+      <blockquote>
+        "We believe that food security and climate responsibility are inseparable.
+        At ALU FoodShare, we empower students to tackle both crises simultaneously &mdash;
+        by redistributing surplus food within our campus community, we reduce the
+        environmental toll of food waste while ensuring no fellow student faces hunger.
+        Every meal shared is a step toward a more just, sustainable Africa."
+      </blockquote>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">&#127757;</div>
+        <h3>Climate Consciousness</h3>
+        <p>Food waste generates 8-10% of global greenhouse gas emissions. By redirecting surplus food from landfills to plates, we directly reduce methane emissions and our campus carbon footprint.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">&#129309;</div>
+        <h3>Zero Hunger Campus</h3>
+        <p>Aligned with SDG 2 (Zero Hunger), we create a safety net where every ALU student has access to nutritious food, regardless of their financial situation.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">&#9851;&#65039;</div>
+        <h3>Circular Food Economy</h3>
+        <p>We transform the linear "buy-consume-waste" model into a circular system where surplus becomes sustenance, building resilient food networks on campus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">How It Works</span>
+      <h2>Share Food in 3 Simple Steps</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Post Your Surplus</h3>
+        <p>Have extra food from an event, cafeteria, or cooking? Snap a photo, add details, and post it on the food board.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Browse & Request</h3>
+        <p>Students in need browse available food listings, filter by dietary needs, and request pickup.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Connect & Share</h3>
+        <p>Meet at a designated campus pickup point, share the meal, and both earn impact points.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+@if (featuredListings.length > 0) {
+  <section class="featured">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Available Now</span>
+        <h2>Fresh Food on the Board</h2>
+      </div>
+      <div class="listings-grid">
+        @for (listing of featuredListings; track listing._id) {
+          <app-food-card [listing]="listing"></app-food-card>
+        }
+      </div>
+      <div class="view-all">
+        <a routerLink="/dashboard" class="btn btn-outline">View All Listings</a>
+      </div>
+    </div>
+  </section>
+}
+
+<section class="cta">
+  <div class="container">
+    <h2>Join the Movement Against Food Waste & Hunger</h2>
+    <p>Whether you have surplus food to share or need a meal, you're part of the solution.</p>
+    <div class="cta-actions">
+      <a routerLink="/register" class="btn btn-primary btn-lg">Get Started Free</a>
+      <a routerLink="/about" class="btn btn-outline btn-lg">Learn More</a>
+    </div>
+  </div>
+</section>

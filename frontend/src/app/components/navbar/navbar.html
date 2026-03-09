@@ -1,0 +1,30 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/" class="nav-logo">
+      <span class="logo-icon">&#127793;</span>
+      <span>ALU <strong>FoodShare</strong></span>
+    </a>
+
+    <ul class="nav-menu" [class.active]="menuOpen">
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="menuOpen = false">Home</a></li>
+      <li><a routerLink="/dashboard" routerLinkActive="active" (click)="menuOpen = false">Food Board</a></li>
+      <li><a routerLink="/donate" routerLinkActive="active" (click)="menuOpen = false">Share Food</a></li>
+      <li><a routerLink="/community" routerLinkActive="active" (click)="menuOpen = false">Community</a></li>
+      <li><a routerLink="/about" routerLinkActive="active" (click)="menuOpen = false">About</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      @if (auth.isLoggedIn()) {
+        <span class="user-name">{{ auth.currentUser()?.name }}</span>
+        <button class="btn btn-outline btn-sm" (click)="logout()">Log Out</button>
+      } @else {
+        <a routerLink="/login" class="btn btn-outline btn-sm">Log In</a>
+        <a routerLink="/register" class="btn btn-primary btn-sm">Join Us</a>
+      }
+    </div>
+
+    <button class="nav-toggle" (click)="toggleMenu()">
+      <span class="hamburger" [class.open]="menuOpen"></span>
+    </button>
+  </div>
+</nav>

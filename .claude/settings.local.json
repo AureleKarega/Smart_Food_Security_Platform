@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ng new frontend --routing --style=scss --skip-git --skip-tests --ssr=false)",
+      "Bash(ng generate component components/navbar --skip-tests)",
+      "Bash(ng generate component components/home --skip-tests)",
+      "Bash(ng generate component components/dashboard --skip-tests)",
+      "Bash(ng generate component components/donate --skip-tests)",
+      "Bash(ng generate component components/login --skip-tests)",
+      "Bash(ng generate component components/register --skip-tests)",
+      "Bash(ng generate component components/community --skip-tests)",
+      "Bash(ng generate component components/about --skip-tests)",
+      "Bash(ng generate component components/footer --skip-tests)",
+      "Bash(ng generate component components/food-card --skip-tests)"
+    ]
+  }
+}
