@@ -2,10 +2,11 @@ import { Component, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-posts',
-  imports: [DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule,RouterModule],
   templateUrl: './admin-posts.html',
   styleUrl: './admin-posts.scss',
 })

@@ -13,6 +13,7 @@ import { adminGuard } from './guards/admin.guard';
 import { AdminAuditLogs } from './components/admin-audit-logs/admin-audit-logs';
 import { AdminPosts } from './components/admin-posts/admin-posts';
 import { AdminListings } from './components/admin-listings/admin-listings';
+import { AdminLayout } from './components/admin-layout/admin-layout';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -24,9 +25,17 @@ export const routes: Routes = [
   { path: 'about', component: About },
   { path: 'request-food', component: FoodRequest },
   { path: 'notifications', component: Notifications },
-  { path: 'admin', component: AdminDashboard, canActivate: [adminGuard] },
-  { path: 'admin/audit', component: AdminAuditLogs, canActivate: [adminGuard] },
-  { path: 'admin/posts', component: AdminPosts, canActivate: [adminGuard] },
-  { path: 'admin/listings', component: AdminListings, canActivate: [adminGuard] },
+  { 
+    path: 'admin', 
+    component: AdminLayout, 
+    canActivate: [adminGuard],
+    children: [
+      { path: '', component: AdminDashboard },
+      { path: 'audit', component: AdminAuditLogs },
+      { path: 'posts', component: AdminPosts },
+      { path: 'listings', component: AdminListings },
+      { path: '**', redirectTo: '' }
+    ]
+  },
   { path: '**', redirectTo: '' }
 ];
