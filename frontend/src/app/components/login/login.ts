@@ -22,7 +22,11 @@ export class Login {
     this.loading.set(true);
     this.auth.login({ email: this.email, password: this.password }).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        if (this.auth.isAdminOrModerator()) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (err) => {
         this.error.set(err.error?.message || 'Login failed');

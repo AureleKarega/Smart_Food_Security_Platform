@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -22,4 +22,4 @@ const connectDB = async () => {
   }
 };
 
-module.exports = { sequelize, connectDB };
+module.exports = { sequelize, connectDB, DataTypes };

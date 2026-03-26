@@ -1,0 +1,70 @@
+.notifications-page {
+  padding: 2rem 0 3rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  p {
+    color: var(--text-light);
+  }
+}
+
+.notifications-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notification-item {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+
+  small {
+    color: var(--text-muted);
+  }
+}
+
+.notification-item.unread {
+  border-left: 4px solid var(--primary);
+}
+
+.read-pill {
+  color: #0f766e;
+  background: rgba(42, 157, 143, 0.2);
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  padding: 1rem;
+}
+
+.error {
+  color: var(--danger);
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .notification-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

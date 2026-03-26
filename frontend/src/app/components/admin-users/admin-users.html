@@ -1,0 +1,79 @@
+<section class="admin-page">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>User Management</h1>
+        <p>Manage user roles, permissions, and access levels.</p>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="search-row">
+      <input [(ngModel)]="searchQuery" placeholder="Search by name, email, or student ID..." />
+      <button class="btn btn-outline btn-sm" (click)="searchUsers()">Search</button>
+      <button class="btn btn-primary btn-sm" (click)="clearSearch()">Clear</button>
+    </div>
+
+    @if (loading()) {
+      <p>Loading users...</p>
+    } @else if (users().length === 0) {
+      <p class="muted">No users found.</p>
+    } @else {
+      <div class="card panel">
+        <h3>Users</h3>
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Student ID</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of users(); track user.id) {
+                <tr>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.studentId }}</td>
+                  <td>
+                    <select [ngModel]="user.role" (ngModelChange)="updateRole(user.id, $event)">
+                      <option value="student">Student</option>
+                      <option value="moderator">Moderator</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="status-badge" [class.active]="user.isActive">
+                      {{ user.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-outline btn-sm danger" (click)="toggleUserStatus(user.id, !user.isActive)">
+                      {{ user.isActive ? 'Deactivate' : 'Activate' }}
+                    </button>
+                    <button class="btn btn-outline btn-sm" (click)="viewUserDetails(user.id)">
+                      Details
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pager">
+          <button class="btn btn-outline btn-sm" (click)="prevPage()" [disabled]="currentPage() === 1">Prev</button>
+          <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <button class="btn btn-outline btn-sm" (click)="nextPage()" [disabled]="currentPage() === totalPages()">Next</button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

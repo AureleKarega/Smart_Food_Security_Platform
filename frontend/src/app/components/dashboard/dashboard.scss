@@ -5,6 +5,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   margin-bottom: 2rem;
   h1 { font-size: 2rem; font-weight: 800; }
   p { color: var(--text-light); }
@@ -16,6 +17,7 @@
   flex-wrap: wrap;
   .search-box {
     flex: 1;
+    min-width: 260px;
     display: flex;
     gap: 0.5rem;
     input {
@@ -29,6 +31,7 @@
     }
   }
   select {
+    min-width: 220px;
     padding: 0.75rem 1rem;
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
@@ -55,4 +58,25 @@
 @media (max-width: 768px) {
   .page-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
   .listings-grid { grid-template-columns: 1fr; }
+  .filters {
+    .search-box,
+    select {
+      min-width: 100%;
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-page {
+    padding: 1.25rem 0 2.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.6rem;
+  }
+
+  .filters .search-box {
+    flex-direction: column;
+  }
 }

@@ -15,6 +15,8 @@ export class Register {
   studentId = '';
   password = '';
   confirmPassword = '';
+  accountType: 'client' | 'administrator' = 'client';
+  adminSignupCode = '';
   error = signal('');
   loading = signal(false);
 
@@ -25,16 +27,26 @@ export class Register {
       this.error.set('Passwords do not match');
       return;
     }
+    if (this.accountType === 'administrator' && !this.adminSignupCode.trim()) {
+      this.error.set('Admin sign-up code is required for administrator accounts');
+      return;
+    }
     this.error.set('');
     this.loading.set(true);
     this.auth.register({
       name: this.name,
       email: this.email,
       password: this.password,
-      studentId: this.studentId
+      studentId: this.studentId,
+      accountType: this.accountType,
+      adminSignupCode: this.accountType === 'administrator' ? this.adminSignupCode.trim() : undefined
     }).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        if (this.auth.isAdminOrModerator()) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
       },
       error: (err) => {
         this.error.set(err.error?.message || 'Registration failed');

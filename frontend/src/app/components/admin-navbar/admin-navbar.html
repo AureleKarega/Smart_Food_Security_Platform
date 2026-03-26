@@ -1,0 +1,27 @@
+<nav class="admin-navbar px-10">
+  <div class="nav-container  ">
+    <a routerLink="/admin" class="nav-logo">
+      <span class="logo-badge">ADM</span>
+      <span class="logo-text">
+        <strong>Admin Panel</strong>
+        <small>Food Security Platform</small>
+      </span>
+    </a>
+
+    <ul class="nav-menu" [class.active]="menuOpen">
+      <li><a routerLink="/admin" routerLinkActive="active" (click)="menuOpen = false">Overview</a></li>
+      <li><a routerLink="/admin/audit" routerLinkActive="active" (click)="menuOpen = false">Audit Logs</a></li>
+      <li><a routerLink="/admin/posts" routerLinkActive="active" (click)="menuOpen = false">Community Posts</a></li>
+      <li><a routerLink="/admin/listings" routerLinkActive="active" (click)="menuOpen = false">Food Listings</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <span class="user-name">Admin: {{ currentUser()?.name }}</span>
+      <button class="btn" (click)="logout()">Log Out</button>
+    </div>
+
+    <button class="nav-toggle" (click)="toggleMenu()">
+      <span class="hamburger" [class.open]="menuOpen"></span>
+    </button>
+  </div>
+</nav>

@@ -10,7 +10,7 @@ const generateToken = (id) => {
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, studentId } = req.body;
+    const { name, email, password, studentId, accountType, adminSignupCode } = req.body;
 
     const existingUser = await User.findOne({
       where: { [Op.or]: [{ email }, { studentId }] }
@@ -19,7 +19,21 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'User with this email or student ID already exists' });
     }
 
-    const user = await User.create({ name, email, password, studentId });
+    let role = 'student';
+    if (accountType === 'administrator') {
+      const expectedCode = process.env.ADMIN_SIGNUP_CODE;
+      if (!expectedCode) {
+        return res.status(500).json({ message: 'Admin sign-up is not configured on server' });
+      }
+
+      if (!adminSignupCode || adminSignupCode !== expectedCode) {
+        return res.status(403).json({ message: 'Invalid admin sign-up code' });
+      }
+
+      role = 'admin';
+    }
+
+    const user = await User.create({ name, email, password, studentId, role });
     const token = generateToken(user.id);
 
     res.status(201).json({
@@ -29,7 +43,10 @@ exports.register = async (req, res) => {
         name: user.name,
         email: user.email,
         studentId: user.studentId,
-        impactPoints: user.impactPoints
+        impactPoints: user.impactPoints,
+        mealsShared: user.mealsShared,
+        mealsReceived: user.mealsReceived,
+        role: user.role
       }
     });
   } catch (error) {
@@ -57,7 +74,8 @@ exports.login = async (req, res) => {
         studentId: user.studentId,
         impactPoints: user.impactPoints,
         mealsShared: user.mealsShared,
-        mealsReceived: user.mealsReceived
+        mealsReceived: user.mealsReceived,
+        role: user.role
       }
     });
   } catch (error) {

@@ -20,4 +20,8 @@ export class Navbar {
   logout() {
     this.auth.logout();
   }
+
+  isAdminUser() {
+    return this.auth.isAdminOrModerator();
+  }
 }

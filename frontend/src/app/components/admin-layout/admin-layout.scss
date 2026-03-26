@@ -1,0 +1,26 @@
+/* Admin Layout Styles */
+main {
+  min-height: calc(100vh - 140px); /* Account for navbar and footer */
+  padding: 2rem 0;
+  background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+  padding-top: 120px; /* Add extra space for fixed navbar */
+}
+
+/* Ensure proper spacing for admin content */
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem 0;
+    min-height: calc(100vh - 120px);
+  }
+  
+  .admin-page {
+    padding: 0 1rem;
+  }
+}

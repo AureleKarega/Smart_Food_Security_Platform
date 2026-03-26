@@ -29,10 +29,45 @@
   font-size: 0.9rem;
 }
 .full-width { width: 100%; justify-content: center; }
+.role-options {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.role-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  background: #fff;
+}
+
+.role-option input {
+  accent-color: var(--primary);
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 1.5rem;
   color: var(--text-light);
   font-size: 0.9rem;
   a { color: var(--primary); font-weight: 600; }
+}
+
+@media (max-width: 480px) {
+  .auth-page {
+    padding: 1rem 0.5rem;
+  }
+
+  .auth-card {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius);
+  }
+
+  .auth-header h2 {
+    font-size: 1.4rem;
+  }
 }

@@ -11,6 +11,7 @@ export interface User {
   impactPoints: number;
   mealsShared: number;
   mealsReceived: number;
+  role: 'student' | 'moderator' | 'admin';
 }
 
 @Injectable({
@@ -30,7 +31,14 @@ export class AuthService {
     }
   }
 
-  register(data: { name: string; email: string; password: string; studentId: string }): Observable<any> {
+  register(data: {
+    name: string;
+    email: string;
+    password: string;
+    studentId: string;
+    accountType?: 'client' | 'administrator';
+    adminSignupCode?: string;
+  }): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, data).pipe(
       tap((res: any) => {
         localStorage.setItem('token', res.token);
@@ -62,5 +70,14 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  hasRole(...roles: Array<'student' | 'moderator' | 'admin'>): boolean {
+    const role = this.currentUser()?.role;
+    return !!role && roles.includes(role);
+  }
+
+  isAdminOrModerator(): boolean {
+    return this.hasRole('admin', 'moderator');
   }
 }

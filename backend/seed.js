@@ -4,13 +4,14 @@ dotenv.config();
 const { connectDB, sequelize } = require('./config/db');
 const { User, FoodListing, CommunityPost, Comment } = require('./models');
 
+
 const seed = async () => {
   await connectDB();
   await sequelize.sync({ alter: true });
 
   // Create users
   const users = await User.bulkCreate([
-    { name: 'Aurele Karega', email: 'aurele@alustudent.com', password: 'password123', studentId: 'ALU2024001', bio: 'Passionate about food sustainability and climate action.', impactPoints: 45, mealsShared: 5, mealsReceived: 2 },
+    { name: 'Aurele Karega', email: 'aurele@alustudent.com', password: 'password123', studentId: 'ALU2024001', bio: 'Passionate about food sustainability and climate action.', impactPoints: 45, mealsShared: 5, mealsReceived: 2, role: 'admin' },
     { name: 'Amina Diallo', email: 'amina@alustudent.com', password: 'password123', studentId: 'ALU2024002', bio: 'Environmental science student. Zero waste advocate.', impactPoints: 30, mealsShared: 3, mealsReceived: 1 },
     { name: 'David Okonkwo', email: 'david@alustudent.com', password: 'password123', studentId: 'ALU2024003', bio: 'Love cooking Nigerian dishes and sharing with friends.', impactPoints: 60, mealsShared: 7, mealsReceived: 3 },
     { name: 'Fatima Nkosi', email: 'fatima@alustudent.com', password: 'password123', studentId: 'ALU2024004', bio: 'CS student who believes tech can solve food insecurity.', impactPoints: 25, mealsShared: 2, mealsReceived: 4 },

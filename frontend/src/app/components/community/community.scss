@@ -110,3 +110,33 @@
   padding: 3rem;
   color: var(--text-light);
 }
+
+@media (max-width: 768px) {
+  .new-post-card .post-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .post-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .post-footer {
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .community-page {
+    padding: 1.5rem 0 2.5rem;
+  }
+
+  .new-post-card,
+  .post-card {
+    padding: 1rem;
+  }
+}

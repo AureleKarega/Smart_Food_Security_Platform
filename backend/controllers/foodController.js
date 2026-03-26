@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { sequelize } = require('../config/db');
 const FoodListing = require('../models/FoodListing');
 const User = require('../models/User');
+const { FoodRequest, Notification } = require('../models');
 
 exports.createListing = async (req, res) => {
   try {
@@ -18,6 +19,26 @@ exports.createListing = async (req, res) => {
     const result = await FoodListing.findByPk(listing.id, {
       include: [{ model: User, as: 'donor', attributes: ['id', 'name', 'avatar'] }]
     });
+
+    // Notify users with pending requests that match this listing title.
+    const matchingRequests = await FoodRequest.findAll({
+      where: {
+        status: 'pending',
+        foodName: {
+          [Op.iLike]: `%${listing.title}%`
+        }
+      }
+    });
+
+    for (const request of matchingRequests) {
+      await Notification.create({
+        userId: request.userId,
+        message: `${listing.title} is now available.`
+      });
+
+      request.status = 'notified';
+      await request.save();
+    }
 
     res.status(201).json({ listing: result });
   } catch (error) {

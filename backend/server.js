@@ -5,11 +5,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { connectDB, sequelize } = require('./config/db');
-const { User, FoodListing, CommunityPost, Comment } = require('./models');
+const { User, FoodListing, CommunityPost, Comment, FoodRequest, Notification } = require('./models');
 
 const authRoutes = require('./routes/authRoutes');
 const foodRoutes = require('./routes/foodRoutes');
 const communityRoutes = require('./routes/communityRoutes');
+const FoodRequestRoutes = require('./routes/FoodRequestRoutes');
+const NotificationRoutes = require('./routes/NotificationRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -21,6 +24,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/food', foodRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/requests', FoodRequestRoutes);
+app.use('/api/notifications', NotificationRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

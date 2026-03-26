@@ -1,0 +1,160 @@
+<section class="admin-page">
+  <div class="container">
+    <div class="page-header px-10">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Monitor platform activity, moderate misuse, and manage user access levels.</p>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    @if (loading()) {
+      <p>Loading admin dashboard...</p>
+    } @else if (overview()) {
+      <div class="stats-grid" id="admin-panel-overview">
+        <article class="card stat-card">
+          <h4>Total Users</h4>
+          <p>{{ overview()?.stats?.totalUsers }}</p>
+        </article>
+        <article class="card stat-card">
+          <h4>Admins/Moderators</h4>
+          <p>{{ overview()?.stats?.totalAdmins }}</p>
+        </article>
+        <article class="card stat-card">
+          <h4>Food Listings</h4>
+          <p>{{ overview()?.stats?.totalListings }}</p>
+        </article>
+        <article class="card stat-card">
+          <h4>Community Posts</h4>
+          <p>{{ overview()?.stats?.totalPosts }}</p>
+        </article>
+        <article class="card stat-card">
+          <h4>Food Requests</h4>
+          <p>{{ overview()?.stats?.totalRequests }}</p>
+        </article>
+        <article class="card stat-card">
+          <h4>Pending Requests</h4>
+          <p>{{ overview()?.stats?.pendingRequests }}</p>
+        </article>
+      </div>
+
+      <div class="admin-panels">
+        <div class="card panel" id="admin-panel-moderation-listings">
+          <h3>Moderation: Recent Food Listings</h3>
+          <div class="search-row">
+            <input [(ngModel)]="activitySearch" placeholder="Search listings/posts/requests..." />
+            <button class="btn btn-outline btn-sm" (click)="onSearchActivity()">Search</button>
+          </div>
+          @if (recentListings().length === 0) {
+            <p class="muted">No recent listings found.</p>
+          } @else {
+            @for (listing of recentListings(); track listing.id) {
+              <div class="row-item">
+                <div>
+                  <strong>{{ listing.title }}</strong>
+                  <p>By {{ listing.donor?.name || 'Unknown' }} · {{ listing.createdAt | date: 'medium' }}</p>
+                </div>
+                <button class="btn btn-outline btn-sm danger" (click)="removeListing(listing.id)">Remove</button>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="card panel" id="admin-panel-moderation-posts">
+          <h3>Moderation: Recent Community Posts</h3>
+          @if (recentPosts().length === 0) {
+            <p class="muted">No recent posts found.</p>
+          } @else {
+            @for (post of recentPosts(); track post.id) {
+              <div class="row-item">
+                <div>
+                  <strong>{{ post.author?.name || 'Unknown' }}</strong>
+                  <p>{{ post.content }}</p>
+                </div>
+                <button class="btn btn-outline btn-sm danger" (click)="removePost(post.id)">Remove</button>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="card panel" id="admin-panel-system-activity">
+        <h3>System Activity: Recent Food Requests</h3>
+        @if (recentRequests().length === 0) {
+          <p class="muted">No recent food requests found.</p>
+        } @else {
+          @for (request of recentRequests(); track request.id) {
+            <div class="row-item">
+              <div>
+                <strong>{{ request.foodName }}</strong>
+                <p>
+                  {{ request.User?.name || 'Unknown' }} · {{ request.status }} · {{ request.createdAt | date: 'medium'
+                  }}
+                </p>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      @if (auth.hasRole('admin')) {
+        <div class="card panel" id="admin-panel-access-management">
+          <h3>Access Management: User Roles</h3>
+          <div class="search-row">
+            <input [(ngModel)]="usersSearch" placeholder="Search by name, email, or student ID..." />
+            <button class="btn btn-outline btn-sm" (click)="onSearchUsers()">Search</button>
+          </div>
+          @if (users().length === 0) {
+            <p class="muted">No users found.</p>
+          } @else {
+            @for (user of users(); track user.id) {
+              <div class="row-item">
+                <div>
+                  <strong>{{ user.name }}</strong>
+                  <p>{{ user.email }} · {{ user.studentId }}</p>
+                </div>
+                <select [ngModel]="user.role" (ngModelChange)="updateRole(user.id, $event)">
+                  <option value="student">student</option>
+                  <option value="moderator">moderator</option>
+                  <option value="admin">admin</option>
+                </select>
+              </div>
+            }
+            <div class="pager">
+              <button class="btn btn-outline btn-sm" (click)="prevUsersPage()" [disabled]="usersPage() === 1">Prev</button>
+              <span>Page {{ usersPage() }} of {{ usersTotalPages() }}</span>
+              <button class="btn btn-outline btn-sm" (click)="nextUsersPage()" [disabled]="usersPage() === usersTotalPages()">Next</button>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="card panel" id="admin-panel-audit-logs">
+        <h3>Audit Logs</h3>
+        @if (auditLogs().length === 0) {
+          <p class="muted">No audit logs yet.</p>
+        } @else {
+          @for (log of auditLogs(); track log.id) {
+            <div class="row-item">
+              <div>
+                <strong>{{ log.action }}</strong>
+                <p>
+                  By {{ log.actor?.name || 'Unknown' }} ({{ log.actorRole }}) · {{ log.targetType }}: {{ log.targetId }}
+                  · {{ log.createdAt | date: 'medium' }}
+                </p>
+              </div>
+            </div>
+          }
+          <div class="pager">
+            <button class="btn btn-outline btn-sm" (click)="prevLogsPage()" [disabled]="logsPage() === 1">Prev</button>
+            <span>Page {{ logsPage() }} of {{ logsTotalPages() }}</span>
+            <button class="btn btn-outline btn-sm" (click)="nextLogsPage()" [disabled]="logsPage() === logsTotalPages()">Next</button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>

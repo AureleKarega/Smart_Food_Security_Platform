@@ -189,6 +189,10 @@ img {
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
   .section-header h2 {
     font-size: 1.75rem;
   }
@@ -196,5 +200,16 @@ img {
   .btn-lg {
     padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
   }
 }

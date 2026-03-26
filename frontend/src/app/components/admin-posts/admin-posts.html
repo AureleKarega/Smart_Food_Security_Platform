@@ -1,0 +1,63 @@
+<section class="admin-page">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>Moderation: Community Posts</h1>
+        <p>Remove content that violates platform rules.</p>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <h3>Search</h3>
+      <div class="search-row">
+        <input
+          type="text"
+          [(ngModel)]="search"
+          placeholder="Search posts by content..."
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-outline btn-sm" (click)="onSearch()">Search</button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    @if (loading()) {
+      <p>Loading posts...</p>
+    } @else {
+      @if (posts().length === 0) {
+        <p class="muted">No community posts found.</p>
+      } @else {
+        <div class="posts-list">
+          @for (post of posts(); track post.id) {
+            <article class="card post-item">
+              <div class="row-item">
+                <div>
+                  <strong>{{ post.author?.name || 'Unknown' }}</strong>
+                  <p class="post-content">{{ post.content }}</p>
+                  <small class="post-date">{{ post.createdAt | date:'medium' }}</small>
+                </div>
+                <button class="btn btn-outline btn-sm danger" (click)="remove(post.id)">Remove</button>
+              </div>
+            </article>
+          }
+        </div>
+
+        <div class="pager">
+          <button class="btn btn-outline btn-sm" (click)="prevPage()" [disabled]="page() === 1">Prev</button>
+          <span>Page {{ page() }} of {{ totalPages() }}</span>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="nextPage()"
+            [disabled]="page() === totalPages()"
+          >
+            Next
+          </button>
+        </div>
+      }
+    }
+  </div>
+</section>
+

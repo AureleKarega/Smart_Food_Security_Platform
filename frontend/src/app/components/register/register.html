@@ -27,6 +27,34 @@
       </div>
 
       <div class="form-group">
+        <label>Account Type</label>
+        <div class="role-options">
+          <label class="role-option">
+            <input type="radio" name="accountType" [(ngModel)]="accountType" value="client" />
+            <span>Client</span>
+          </label>
+          <label class="role-option">
+            <input type="radio" name="accountType" [(ngModel)]="accountType" value="administrator" />
+            <span>Administrator</span>
+          </label>
+        </div>
+      </div>
+
+      @if (accountType === 'administrator') {
+        <div class="form-group">
+          <label for="adminSignupCode">Admin Sign-up Code</label>
+          <input
+            id="adminSignupCode"
+            type="password"
+            [(ngModel)]="adminSignupCode"
+            name="adminSignupCode"
+            placeholder="Enter admin sign-up code"
+            required
+          >
+        </div>
+      }
+
+      <div class="form-group">
         <label for="password">Password</label>
         <input id="password" type="password" [(ngModel)]="password" name="password" placeholder="Min. 6 characters" required>
       </div>

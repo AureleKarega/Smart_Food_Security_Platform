@@ -1,0 +1,65 @@
+<section class="admin-page">
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <h1>Moderation: Food Listings</h1>
+        <p>Remove listings that violate platform rules.</p>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <h3>Search</h3>
+      <div class="search-row">
+        <input
+          type="text"
+          [(ngModel)]="search"
+          placeholder="Search listings by title..."
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-outline btn-sm" (click)="onSearch()">Search</button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    @if (loading()) {
+      <p>Loading listings...</p>
+    } @else {
+      @if (listings().length === 0) {
+        <p class="muted">No food listings found.</p>
+      } @else {
+        <div class="listings-list">
+          @for (listing of listings(); track listing.id) {
+            <article class="card listing-item">
+              <div class="row-item">
+                <div>
+                  <strong>{{ listing.title }}</strong>
+                  <p class="listing-subtitle">
+                    Shared by {{ listing.donor?.name || 'Unknown' }} · {{ listing.category }}
+                  </p>
+                  <small class="post-date">{{ listing.createdAt | date:'medium' }}</small>
+                </div>
+                <button class="btn btn-outline btn-sm danger" (click)="remove(listing.id)">Remove</button>
+              </div>
+            </article>
+          }
+        </div>
+
+        <div class="pager">
+          <button class="btn btn-outline btn-sm" (click)="prevPage()" [disabled]="page() === 1">Prev</button>
+          <span>Page {{ page() }} of {{ totalPages() }}</span>
+          <button
+            class="btn btn-outline btn-sm"
+            (click)="nextPage()"
+            [disabled]="page() === totalPages()"
+          >
+            Next
+          </button>
+        </div>
+      }
+    }
+  </div>
+</section>
+

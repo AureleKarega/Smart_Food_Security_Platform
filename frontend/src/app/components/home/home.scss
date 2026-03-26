@@ -4,6 +4,10 @@
   padding: 6rem 1.5rem 4rem;
   text-align: center;
 }
+.hero-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
 .hero-badge {
   display: inline-block;
   background: rgba(255, 255, 255, 0.15);
@@ -141,4 +145,38 @@
   .hero h1 { font-size: 2.25rem; }
   .pillars, .steps, .listings-grid { grid-template-columns: 1fr; }
   .hero-stats { gap: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 4.5rem 1rem 3rem;
+  }
+
+  .hero h1 {
+    font-size: 1.85rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-stats {
+    gap: 1rem;
+  }
+
+  .stat-number {
+    font-size: 1.6rem;
+  }
+
+  .mission,
+  .how-it-works,
+  .featured,
+  .cta {
+    padding: 3.25rem 0;
+  }
+
+  .mission-statement blockquote {
+    padding-left: 1rem;
+    font-size: 1rem;
+  }
 }

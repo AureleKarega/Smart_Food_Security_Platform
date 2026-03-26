@@ -1,4 +1,12 @@
-<app-navbar></app-navbar>
+@defer (on viewport) {
+  @if (isAdmin) {
+    <app-admin-navbar></app-admin-navbar>
+  } @else {
+    <app-navbar></app-navbar>
+  }
+} @placeholder {
+  <app-navbar></app-navbar>
+}
 <main>
   <router-outlet />
 </main>
