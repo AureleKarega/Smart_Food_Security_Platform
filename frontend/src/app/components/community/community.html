@@ -43,9 +43,9 @@
           <div class="post-card">
             <div class="post-header">
               <div class="post-author">
-                <div class="avatar">{{ post.author?.name?.charAt(0) || '?' }}</div>
+                <div class="avatar">{{ post.author.name.charAt(0) || '?' }}</div>
                 <div>
-                  <strong>{{ post.author?.name || 'Anonymous' }}</strong>
+                  <strong>{{ post.author.name || 'Anonymous' }}</strong>
                   <span class="post-date">{{ post.createdAt | date:'mediumDate' }}</span>
                 </div>
               </div>
@@ -54,9 +54,9 @@
             <p class="post-content">{{ post.content }}</p>
             <div class="post-footer">
               <button class="action-btn" (click)="likePost(post)">
-                &#10084;&#65039; {{ post.likes?.length || 0 }}
+                &#10084;&#65039; {{ post.likes.length || 0 }}
               </button>
-              <span class="action-btn">&#128172; {{ post.comments?.length || 0 }} comments</span>
+              <span class="action-btn">&#128172; {{ post.comments.length || 0 }} comments</span>
             </div>
           </div>
         }

@@ -12,7 +12,7 @@
         <span class="meta-item">&#128205; {{ listing.pickupLocation }}</span>
         <span class="meta-item">&#128336; Expires: {{ listing.expiresAt | date:'short' }}</span>
       </div>
-      @if (listing.dietaryInfo?.length) {
+      @if (listing.dietaryInfo.length) {
         <div class="dietary-tags">
           @for (tag of listing.dietaryInfo; track tag) {
             <span class="diet-tag">{{ tag }}</span>
@@ -20,7 +20,7 @@
         </div>
       }
       <div class="card-footer">
-        <span class="donor">Shared by {{ listing.donor?.name || 'Anonymous' }}</span>
+        <span class="donor">Shared by {{ listing.donor.name || 'Anonymous' }}</span>
         <span class="co2">&#127793; {{ listing.co2Saved }} kg CO2 saved</span>
       </div>
       @if (listing.status === 'available' && auth.isLoggedIn() && !isExpired()) {

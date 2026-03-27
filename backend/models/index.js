@@ -2,9 +2,9 @@ const User = require('./User');
 const FoodListing = require('./FoodListing');
 const { CommunityPost, Comment } = require('./CommunityPost');
 const { sequelize, DataTypes } = require('../config/db');
-const FoodRequest = require('./FoodRequest')(sequelize, DataTypes);
-const Notification = require('./Notification')(sequelize, DataTypes);
-const AuditLog = require('./AuditLog')(sequelize, DataTypes);
+const FoodRequest = require('./FoodRequest');
+const Notification = require('./Notification');
+const AuditLog = require('./AuditLog');
 
 // FoodRequest associations
 FoodRequest.associate({ User });

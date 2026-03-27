@@ -1,48 +1,27 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-
-dotenv.config();
+require('dotenv').config();
 
 const { connectDB, sequelize } = require('./config/db');
-const { User, FoodListing, CommunityPost, Comment, FoodRequest, Notification } = require('./models');
-
-const authRoutes = require('./routes/authRoutes');
-const foodRoutes = require('./routes/foodRoutes');
-const communityRoutes = require('./routes/communityRoutes');
-const FoodRequestRoutes = require('./routes/FoodRequestRoutes');
-const NotificationRoutes = require('./routes/NotificationRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-
-const app = express();
-
-// Middleware
-app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
-app.use(express.json());
-
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/food', foodRoutes);
-app.use('/api/community', communityRoutes);
-app.use('/api/requests', FoodRequestRoutes);
-app.use('/api/notifications', NotificationRoutes);
-app.use('/api/admin', adminRoutes);
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'ALU FoodShare API is running' });
-});
+const app = require('./app');
+require('./models');
 
 // Start server
 const PORT = process.env.PORT || 3000;
 
 const start = async () => {
-  await connectDB();
-  await sequelize.sync({ alter: true });
-  console.log('Database tables synced');
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  try {
+    await connectDB();
+    // Avoid destructive/fragile schema ALTERs on every boot.
+    // Set DB_SYNC_ALTER=true only when intentionally evolving schema locally.
+    const shouldAlter = process.env.DB_SYNC_ALTER === 'true';
+    await sequelize.sync(shouldAlter ? { alter: true } : {});
+    console.log('Database tables synced');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error(`Server startup failed: ${error.message}`);
+    process.exit(1);
+  }
 };
 
 start();

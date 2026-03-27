@@ -4,7 +4,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "build": "node -e \"console.log('Backend build check passed: no compile step required.')\"",
+    "dev": "node --watch server.js",
+    "seed": "node seeds/seed.js"
   },
   "keywords": [],
   "author": "",

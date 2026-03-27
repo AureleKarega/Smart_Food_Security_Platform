@@ -30,11 +30,12 @@ export const routes: Routes = [
     component: AdminLayout, 
     canActivate: [adminGuard],
     children: [
-      { path: '', component: AdminDashboard },
+      { path: '', redirectTo: 'overview', pathMatch: 'full' },
+      { path: 'overview', component: AdminDashboard },
       { path: 'audit', component: AdminAuditLogs },
       { path: 'posts', component: AdminPosts },
       { path: 'listings', component: AdminListings },
-      { path: '**', redirectTo: '' }
+      { path: '**', redirectTo: 'overview' }
     ]
   },
   { path: '**', redirectTo: '' }
