@@ -302,3 +302,119 @@ exports.getNotificationsReport = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const truncateNotification = (text, max = 255) => {
+  if (!text) return text;
+  return text.length <= max ? text : `${text.slice(0, max - 1)}…`;
+};
+
+exports.getFoodRequests = async (req, res) => {
+  try {
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 15, 1), 50);
+    const offset = (page - 1) * limit;
+    const status = (req.query.status || 'all').trim().toLowerCase();
+
+    const where = {};
+    if (['pending', 'approved', 'rejected', 'notified'].includes(status)) {
+      where.status = status;
+    }
+
+    const data = await FoodRequest.findAndCountAll({
+      where,
+      limit,
+      offset,
+      order: [['createdAt', 'DESC']],
+      include: [{ model: User, attributes: ['id', 'name', 'email', 'studentId'] }]
+    });
+
+    res.json({
+      requests: data.rows,
+      pagination: {
+        page,
+        limit,
+        total: data.count,
+        totalPages: Math.ceil(data.count / limit)
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.approveFoodRequest = async (req, res) => {
+  try {
+    const request = await FoodRequest.findByPk(req.params.id);
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    if (request.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending requests can be approved' });
+    }
+
+    request.status = 'approved';
+    await request.save();
+
+    await createAuditLog({
+      req,
+      action: 'approve_food_request',
+      targetType: 'food_request',
+      targetId: request.id,
+      metadata: { foodName: request.foodName, userId: request.userId }
+    });
+
+    await Notification.create({
+      userId: request.userId,
+      message: truncateNotification(
+        `Your food request for "${request.foodName}" was approved. You will be notified when matching food is listed.`
+      )
+    });
+
+    const withUser = await FoodRequest.findByPk(request.id, {
+      include: [{ model: User, attributes: ['id', 'name', 'email', 'studentId'] }]
+    });
+
+    res.json({ message: 'Request approved', request: withUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.rejectFoodRequest = async (req, res) => {
+  try {
+    const reason = (req.body?.reason || '').trim();
+    const request = await FoodRequest.findByPk(req.params.id);
+    if (!request) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+    if (request.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending requests can be rejected' });
+    }
+
+    request.status = 'rejected';
+    await request.save();
+
+    await createAuditLog({
+      req,
+      action: 'reject_food_request',
+      targetType: 'food_request',
+      targetId: request.id,
+      metadata: { foodName: request.foodName, userId: request.userId, reason: reason || undefined }
+    });
+
+    const base = `Your food request for "${request.foodName}" was not approved.`;
+    const full = reason ? `${base} Reason: ${reason}` : base;
+    await Notification.create({
+      userId: request.userId,
+      message: truncateNotification(full)
+    });
+
+    const withUser = await FoodRequest.findByPk(request.id, {
+      include: [{ model: User, attributes: ['id', 'name', 'email', 'studentId'] }]
+    });
+
+    res.json({ message: 'Request rejected', request: withUser });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

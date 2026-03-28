@@ -3,7 +3,10 @@
     <div class="page-header">
       <div>
         <h1>Request Food</h1>
-        <p>Tell the community what food you need and get notified when it becomes available.</p>
+        <p>
+          Tell the community what you need. An admin must approve your request before you can be matched when
+          someone donates matching food.
+        </p>
       </div>
       <a routerLink="/notifications" class="btn btn-outline">View Notifications</a>
     </div>
@@ -58,8 +61,14 @@
                 <p>{{ request.location || 'No location provided' }}</p>
                 <small>Requested on {{ request.createdAt | date: 'mediumDate' }}</small>
               </div>
-              <span class="status" [class.notified]="request.status === 'notified'">
-                {{ request.status }}
+              <span
+                class="status"
+                [class.status-pending]="request.status === 'pending'"
+                [class.status-approved]="request.status === 'approved'"
+                [class.status-rejected]="request.status === 'rejected'"
+                [class.status-notified]="request.status === 'notified'"
+              >
+                {{ statusLabel(request.status) }}
               </span>
             </article>
           }

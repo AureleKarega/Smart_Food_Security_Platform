@@ -14,5 +14,8 @@ router.patch('/users/:id/role', authorizeRoles('admin'), controller.updateUserRo
 router.delete('/moderation/posts/:id', controller.deletePost);
 router.delete('/moderation/listings/:id', controller.deleteListing);
 router.get('/reports/notifications', controller.getNotificationsReport);
+router.get('/food-requests', controller.getFoodRequests);
+router.patch('/food-requests/:id/approve', controller.approveFoodRequest);
+router.patch('/food-requests/:id/reject', controller.rejectFoodRequest);
 
 module.exports = router;

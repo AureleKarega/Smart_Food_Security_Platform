@@ -21,6 +21,10 @@
         <input id="password" type="password" [(ngModel)]="password" name="password" placeholder="Enter your password" required>
       </div>
 
+      <p class="forgot-password-link">
+        <a routerLink="/forgot-password">Forgot password?</a>
+      </p>
+
       <button type="submit" class="btn btn-primary btn-lg full-width" [disabled]="loading()">
         {{ loading() ? 'Logging in...' : 'Log In' }}
       </button>

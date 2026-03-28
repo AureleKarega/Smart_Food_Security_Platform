@@ -20,10 +20,10 @@ exports.createListing = async (req, res) => {
       include: [{ model: User, as: 'donor', attributes: ['id', 'name', 'avatar'] }]
     });
 
-    // Notify users with pending requests that match this listing title.
+    // Notify users whose request was admin-approved and matches this listing title.
     const matchingRequests = await FoodRequest.findAll({
       where: {
-        status: 'pending',
+        status: 'approved',
         foodName: {
           [Op.iLike]: `%${listing.title}%`
         }

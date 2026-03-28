@@ -1,13 +1,16 @@
 {
   "name": "frontend",
   "version": "0.0.0",
+  "description": "Vercel: use npm run deploy (plain vercel deploy fails in monorepo — sees parent .git).",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:docker": "ng serve --host 0.0.0.0 --port 4200 --proxy-config proxy.docker.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "node scripts/vercel-deploy-prod.js",
+    "deploy:vercel": "node scripts/vercel-deploy-prod.js"
   },
   "prettier": {
     "printWidth": 100,

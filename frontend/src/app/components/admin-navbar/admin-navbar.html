@@ -1,6 +1,6 @@
 <nav class="admin-navbar px-10">
   <div class="nav-container  ">
-    <a routerLink="/admin" class="nav-logo">
+    <a routerLink="/admin/overview" class="nav-logo">
       <span class="logo-badge">ADM</span>
       <span class="logo-text">
         <strong>Admin Panel</strong>
@@ -9,6 +9,7 @@
     </a>
 
     <div class="nav-actions">
+      <a routerLink="/admin/requests" class="nav-subtle-link">Food requests</a>
       <span class="user-name">Admin: {{ currentUser()?.name }}</span>
       <button class="btn" (click)="logout()">Log Out</button>
     </div>

@@ -1,13 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { AdminService, AdminOverviewResponse } from '../../services/admin';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [DatePipe, FormsModule],
+  imports: [DatePipe, FormsModule, RouterLink],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.scss',
 })
@@ -166,6 +166,8 @@ export class AdminDashboard implements OnInit {
       targetId = 'admin-panel-moderation-posts';
     } else if (url.includes('/admin/listings')) {
       targetId = 'admin-panel-moderation-listings';
+    } else if (url.includes('/admin/requests')) {
+      targetId = 'admin-panel-overview';
     }
 
     const el = document.getElementById(targetId);

@@ -60,16 +60,31 @@
 }
 
 .status {
-  text-transform: capitalize;
-  background: rgba(244, 162, 97, 0.2);
-  color: #b45309;
-  padding: 0.3rem 0.65rem;
+  text-align: right;
+  max-width: 12rem;
+  line-height: 1.3;
+  padding: 0.35rem 0.65rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
-.status.notified {
+.status-pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #b45309;
+}
+
+.status-approved {
+  background: rgba(34, 197, 94, 0.2);
+  color: #15803d;
+}
+
+.status-rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #b91c1c;
+}
+
+.status-notified {
   background: rgba(42, 157, 143, 0.2);
   color: #0f766e;
 }

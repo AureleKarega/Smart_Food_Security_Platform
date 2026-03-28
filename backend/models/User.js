@@ -54,6 +54,16 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('student', 'moderator', 'admin'),
     defaultValue: 'student'
+  },
+  passwordResetTokenHash: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'password_reset_token_hash'
+  },
+  passwordResetExpires: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'password_reset_expires'
   }
 }, {
   tableName: 'users',
@@ -78,6 +88,8 @@ User.prototype.comparePassword = async function (candidatePassword) {
 User.prototype.toJSON = function () {
   const values = { ...this.get() };
   delete values.password;
+  delete values.passwordResetTokenHash;
+  delete values.passwordResetExpires;
   return values;
 };
 

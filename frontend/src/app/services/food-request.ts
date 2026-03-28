@@ -8,7 +8,7 @@ export interface FoodRequestItem {
   id: string;
   foodName: string;
   location: string;
-  status: 'pending' | 'notified' | string;
+  status: 'pending' | 'approved' | 'rejected' | 'notified' | string;
   userId: string;
   createdAt: string;
   updatedAt: string;

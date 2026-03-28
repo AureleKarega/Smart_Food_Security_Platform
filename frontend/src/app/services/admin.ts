@@ -95,6 +95,32 @@ export class AdminService {
     return this.http.delete(`${this.apiUrl}/moderation/listings/${listingId}`, { headers: this.getHeaders() });
   }
 
+  getFoodRequests(params: { page?: number; limit?: number; status?: string }): Observable<any> {
+    const query = new URLSearchParams();
+    if (params.page) query.set('page', String(params.page));
+    if (params.limit) query.set('limit', String(params.limit));
+    if (params.status) query.set('status', params.status);
+    return this.http.get(`${this.apiUrl}/food-requests?${query.toString()}`, {
+      headers: this.getHeaders()
+    });
+  }
+
+  approveFoodRequest(id: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/food-requests/${id}/approve`,
+      {},
+      { headers: this.getHeaders() }
+    );
+  }
+
+  rejectFoodRequest(id: string, reason?: string): Observable<any> {
+    return this.http.patch(
+      `${this.apiUrl}/food-requests/${id}/reject`,
+      { reason: reason ?? '' },
+      { headers: this.getHeaders() }
+    );
+  }
+
   // User management methods
   loadUsers(): void {
     this.loadingSubject.next(true);

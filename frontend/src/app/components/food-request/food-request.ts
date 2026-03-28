@@ -36,6 +36,16 @@ export class FoodRequest implements OnInit {
     this.loadRequests();
   }
 
+  statusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      pending: 'Awaiting admin review',
+      approved: 'Approved — you will be notified when matching food is listed',
+      rejected: 'Not approved',
+      notified: 'Match found — check your notifications'
+    };
+    return labels[status] || status;
+  }
+
   loadRequests() {
     this.loading.set(true);
     this.error.set('');
