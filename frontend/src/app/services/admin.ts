@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth';
+import { apiPath } from '../api-path';
 
 export interface AdminOverviewResponse {
   stats: {
@@ -21,7 +22,7 @@ export interface AdminOverviewResponse {
   providedIn: 'root',
 })
 export class AdminService {
-  private apiUrl = '/api/admin';
+  private readonly apiUrl = apiPath('/api/admin');
   
   // State management
   private usersSubject = new BehaviorSubject<any[]>([]);

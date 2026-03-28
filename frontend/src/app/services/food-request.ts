@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth';
+import { apiPath } from '../api-path';
 
 export interface FoodRequestItem {
   id: string;
@@ -17,7 +18,7 @@ export interface FoodRequestItem {
   providedIn: 'root',
 })
 export class FoodRequestService {
-  private apiUrl = '/api/requests';
+  private readonly apiUrl = apiPath('/api/requests');
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { httpErrorMessage } from '../../http-error-message';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,7 @@ export class Login {
         }
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Login failed');
+        this.error.set(httpErrorMessage(err, 'Login failed'));
         this.loading.set(false);
       }
     });

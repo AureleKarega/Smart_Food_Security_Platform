@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth';
+import { apiPath } from '../api-path';
 
 export interface CommunityPost {
   id: number;
@@ -17,7 +18,7 @@ export interface CommunityPost {
   providedIn: 'root',
 })
 export class CommunityService {
-  private apiUrl = '/api/community';
+  private readonly apiUrl = apiPath('/api/community');
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 

@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { apiPath } from '../api-path';
 
 export interface User {
   id: string;
@@ -18,7 +19,7 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = '/api/auth';
+  private readonly apiUrl = apiPath('/api/auth');
   currentUser = signal<User | null>(null);
   isLoggedIn = signal(false);
 

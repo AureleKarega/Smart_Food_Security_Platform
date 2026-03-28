@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth';
+import { apiPath } from '../api-path';
 
 export interface NotificationItem {
   id: string;
@@ -16,7 +17,7 @@ export interface NotificationItem {
   providedIn: 'root',
 })
 export class NotificationService {
-  private apiUrl = '/api/notifications';
+  private readonly apiUrl = apiPath('/api/notifications');
 
   constructor(private http: HttpClient, private auth: AuthService) {}
 
